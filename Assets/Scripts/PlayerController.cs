@@ -18,10 +18,14 @@ public class PlayerController : MonoBehaviour
 
     private bool isGiant = false;
 
+    float score;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         pAni = GetComponent<Animator>();
+
+        score = 1000f;
     }
 
     private void Update()
@@ -53,6 +57,7 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             pAni.SetTrigger("JumpAction");
         }
+        score -= Time.deltaTime;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -63,6 +68,7 @@ public class PlayerController : MonoBehaviour
 
         if (collision.CompareTag("Finish"))
         {
+            HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
             collision.GetComponent<LevelObject>().MoveToNextLevel();
         }
 
