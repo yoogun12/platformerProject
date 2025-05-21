@@ -8,6 +8,7 @@ public class RankPage : MonoBehaviour
 {
     [SerializeField] Transform contentRoot;
     [SerializeField] GameObject rowPrefab;
+    [SerializeField] TMP_Text rankText; 
 
     StageResultList allData;
 
@@ -15,16 +16,28 @@ public class RankPage : MonoBehaviour
     private void Awake()
     {
         allData = StageResultServer.LoadRank();
-        RefreshRankList();
+        RefreshRankList(1);
     }
-    void RefreshRankList()
+    
+    public void SetStageRank(int stage)
     {
+        RefreshRankList(stage);
+    }
+
+    void RefreshRankList(int _stage)
+    {
+
+        if(rankText != null)
+        {
+            rankText.text = $"stage {_stage} Ranking";
+        }
+
         foreach(Transform child in contentRoot)
         {
             Destroy(child.gameObject);
         }
 
-        var sortedData = allData.results.Where(r => r.stage == 1).OrderByDescending(x => x.score).ToList();
+        var sortedData = allData.results.Where(r => r.stage == _stage).OrderByDescending(x => x.score).ToList();
 
         for (int i =0; i < sortedData.Count; i++)
         {
